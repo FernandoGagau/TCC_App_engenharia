@@ -1,0 +1,243 @@
+version: '3.8'
+
+services:
+  # Redis Master
+  redis-master:
+    image: redis:7-alpine
+    container_name: redis-master
+    restart: always
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./config/redis-master.conf:/usr/local/etc/redis/redis.conf:ro
+      - redis-master-data:/data
+      - redis-master-logs:/var/log/redis
+    ports:
+      - "6379:6379"
+    networks:
+      - redis-net
+    sysctls:
+      - net.core.somaxconn=65535
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    environment:
+      - REDIS_REPLICATION_MODE=master
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  # Redis Replica 1
+  redis-replica-1:
+    image: redis:7-alpine
+    container_name: redis-replica-1
+    restart: always
+    command: redis-server /usr/local/etc/redis/redis.conf --replicaof redis-master 6379
+    volumes:
+      - ./config/redis-replica.conf:/usr/local/etc/redis/redis.conf:ro
+      - redis-replica-1-data:/data
+    depends_on:
+      redis-master:
+        condition: service_healthy
+    networks:
+      - redis-net
+    sysctls:
+      - net.core.somaxconn=65535
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis-master
+      - REDIS_MASTER_PORT=6379
+      - REDIS_MASTER_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  # Redis Replica 2
+  redis-replica-2:
+    image: redis:7-alpine
+    container_name: redis-replica-2
+    restart: always
+    command: redis-server /usr/local/etc/redis/redis.conf --replicaof redis-master 6379
+    volumes:
+      - ./config/redis-replica.conf:/usr/local/etc/redis/redis.conf:ro
+      - redis-replica-2-data:/data
+    depends_on:
+      redis-master:
+        condition: service_healthy
+    networks:
+      - redis-net
+    sysctls:
+      - net.core.somaxconn=65535
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis-master
+      - REDIS_MASTER_PORT=6379
+      - REDIS_MASTER_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  # Redis Sentinel 1
+  redis-sentinel-1:
+    image: redis:7-alpine
+    container_name: redis-sentinel-1
+    restart: always
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    volumes:
+      - ./config/sentinel.conf:/usr/local/etc/redis/sentinel.conf
+      - redis-sentinel-1-data:/data
+    depends_on:
+      redis-master:
+        condition: service_healthy
+      redis-replica-1:
+        condition: service_healthy
+      redis-replica-2:
+        condition: service_healthy
+    networks:
+      - redis-net
+    ports:
+      - "26379:26379"
+    environment:
+      - REDIS_MASTER_HOST=redis-master
+      - REDIS_MASTER_PORT=6379
+      - REDIS_MASTER_PASSWORD=${REDIS_PASSWORD}
+      - SENTINEL_QUORUM=2
+      - SENTINEL_DOWN_AFTER=5000
+      - SENTINEL_FAILOVER_TIMEOUT=180000
+
+  # Redis Sentinel 2
+  redis-sentinel-2:
+    image: redis:7-alpine
+    container_name: redis-sentinel-2
+    restart: always
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    volumes:
+      - ./config/sentinel.conf:/usr/local/etc/redis/sentinel.conf
+      - redis-sentinel-2-data:/data
+    depends_on:
+      redis-master:
+        condition: service_healthy
+      redis-replica-1:
+        condition: service_healthy
+      redis-replica-2:
+        condition: service_healthy
+    networks:
+      - redis-net
+    ports:
+      - "26380:26379"
+    environment:
+      - REDIS_MASTER_HOST=redis-master
+      - REDIS_MASTER_PORT=6379
+      - REDIS_MASTER_PASSWORD=${REDIS_PASSWORD}
+      - SENTINEL_QUORUM=2
+      - SENTINEL_DOWN_AFTER=5000
+      - SENTINEL_FAILOVER_TIMEOUT=180000
+
+  # Redis Sentinel 3
+  redis-sentinel-3:
+    image: redis:7-alpine
+    container_name: redis-sentinel-3
+    restart: always
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+    volumes:
+      - ./config/sentinel.conf:/usr/local/etc/redis/sentinel.conf
+      - redis-sentinel-3-data:/data
+    depends_on:
+      redis-master:
+        condition: service_healthy
+      redis-replica-1:
+        condition: service_healthy
+      redis-replica-2:
+        condition: service_healthy
+    networks:
+      - redis-net
+    ports:
+      - "26381:26379"
+    environment:
+      - REDIS_MASTER_HOST=redis-master
+      - REDIS_MASTER_PORT=6379
+      - REDIS_MASTER_PASSWORD=${REDIS_PASSWORD}
+      - SENTINEL_QUORUM=2
+      - SENTINEL_DOWN_AFTER=5000
+      - SENTINEL_FAILOVER_TIMEOUT=180000
+
+  # RedisInsight for monitoring (optional)
+  redis-insight:
+    image: redislabs/redisinsight:latest
+    container_name: redis-insight
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    networks:
+      - redis-net
+    volumes:
+      - redis-insight-data:/db
+    depends_on:
+      - redis-master
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+
+  # Prometheus Redis Exporter
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: redis-exporter
+    restart: unless-stopped
+    ports:
+      - "9121:9121"
+    networks:
+      - redis-net
+    environment:
+      - REDIS_ADDR=redis-master:6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_EXPORTER_CHECK_KEYS=db0:keys,db0:expires
+      - REDIS_EXPORTER_CHECK_SINGLE_KEYS=db0:string_keys,db0:hash_keys
+    depends_on:
+      - redis-master
+    command:
+      - '--redis.addr=redis://redis-master:6379'
+      - '--redis.password=${REDIS_PASSWORD}'
+
+volumes:
+  redis-master-data:
+    driver: local
+  redis-replica-1-data:
+    driver: local
+  redis-replica-2-data:
+    driver: local
+  redis-sentinel-1-data:
+    driver: local
+  redis-sentinel-2-data:
+    driver: local
+  redis-sentinel-3-data:
+    driver: local
+  redis-master-logs:
+    driver: local
+  redis-insight-data:
+    driver: local
+
+networks:
+  redis-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16

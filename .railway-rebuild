@@ -1,0 +1,9 @@
+# Force Railway rebuild
+# This file change will trigger a fresh build
+
+REBUILD_TIMESTAMP=2025-10-07T$(date +%H:%M:%S)
+
+# Why this rebuild:
+# - Force clear of cached JavaScript bundles (main.e472952f.js)
+# - Ensure REACT_APP_BACKEND_URL is read fresh from env vars
+# - Guarantee HTTPS URLs in all API calls

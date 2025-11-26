@@ -1,0 +1,469 @@
+{
+  "agent_metadata": {
+    "name": "Agente de Obras Conversacional",
+    "version": "1.0.0",
+    "description": "Agente especializado em documentação e monitoramento de obras através de chat e análise de imagens",
+    "created_at": "2025-01-15",
+    "author": "Agente Engenharia Team"
+  },
+
+  "model_config": {
+    "provider": "openai",
+    "chat_model": "gpt-4-turbo-preview",
+    "vision_model": "gpt-4-vision-preview",
+    "temperature": 0.3,
+    "max_tokens": 2048,
+    "vision_enabled": true,
+    "max_image_size": "20MB",
+    "supported_formats": ["jpg", "jpeg", "png", "webp"]
+  },
+
+  "locations": {
+    "location_1": {
+      "id": "area_externa",
+      "name": "Área Externa - Fachada",
+      "description": "Fachada principal, área externa e estruturas externas da construção",
+      "icon": "🏗️",
+      "key_elements": [
+        "estrutura",
+        "fundação",
+        "revestimento_externo",
+        "esquadrias",
+        "cobertura",
+        "área_de_trabalho"
+      ],
+      "tracking_phases": ["fundacao", "estrutura", "alvenaria", "revestimento", "acabamento"],
+      "typical_activities": [
+        "escavação",
+        "concretagem de fundação",
+        "levantamento de pilares",
+        "construção de paredes",
+        "aplicação de revestimento externo"
+      ]
+    },
+    "location_2": {
+      "id": "area_interna",
+      "name": "Área Interna - Ambiente Principal",
+      "description": "Ambiente interno principal da obra (sala, quarto, ambiente integrado)",
+      "icon": "🏠",
+      "key_elements": [
+        "piso",
+        "paredes_internas",
+        "teto",
+        "instalações_aparentes",
+        "divisórias",
+        "vãos_de_porta"
+      ],
+      "tracking_phases": ["estrutura", "alvenaria", "instalacoes", "revestimento", "acabamento"],
+      "typical_activities": [
+        "levantamento de paredes internas",
+        "instalações elétricas",
+        "instalações hidráulicas",
+        "reboco e massa corrida",
+        "pintura e acabamentos"
+      ]
+    },
+    "location_3": {
+      "id": "area_tecnica",
+      "name": "Área Técnica - Cozinha/Banheiro",
+      "description": "Áreas molhadas, instalações técnicas e utilidades",
+      "icon": "🔧",
+      "key_elements": [
+        "tubulação_hidraulica",
+        "tubulação_eletrica",
+        "impermeabilização",
+        "revestimentos_ceramicos",
+        "louças_e_metais",
+        "pontos_de_agua"
+      ],
+      "tracking_phases": ["instalacoes", "impermeabilizacao", "revestimento", "louças", "acabamento"],
+      "typical_activities": [
+        "instalação de tubulações",
+        "impermeabilização de áreas molhadas",
+        "aplicação de revestimentos cerâmicos",
+        "instalação de louças sanitárias",
+        "instalação de metais e acessórios"
+      ]
+    }
+  },
+
+  "construction_phases": {
+    "fundacao": {
+      "name": "Fundação",
+      "description": "Escavação, ferragem e concretagem da fundação",
+      "icon": "⛏️",
+      "typical_duration_days": 7,
+      "visual_indicators": [
+        "terra escavada",
+        "ferragem de fundação exposta",
+        "formas de fundação",
+        "concreto fresco ou curado",
+        "marcação de obra"
+      ],
+      "completion_criteria": "Fundação concretada, curada e pronta para próxima etapa",
+      "quality_checkpoints": [
+        "profundidade da escavação conforme projeto",
+        "posicionamento correto da ferragem",
+        "qualidade do concreto aplicado",
+        "tempo de cura respeitado"
+      ]
+    },
+    "estrutura": {
+      "name": "Estrutura",
+      "description": "Pilares, vigas e lajes estruturais",
+      "icon": "🏗️",
+      "typical_duration_days": 14,
+      "visual_indicators": [
+        "pilares de concreto",
+        "vigas estruturais",
+        "lajes concretadas",
+        "ferragem estrutural",
+        "formas de madeira ou metálicas"
+      ],
+      "completion_criteria": "Estrutura completa, desformada e com resistência adequada",
+      "quality_checkpoints": [
+        "dimensões dos elementos estruturais",
+        "prumo e alinhamento de pilares",
+        "resistência do concreto",
+        "desforma no tempo correto"
+      ]
+    },
+    "alvenaria": {
+      "name": "Alvenaria",
+      "description": "Paredes de vedação e divisórias internas",
+      "icon": "🧱",
+      "typical_duration_days": 10,
+      "visual_indicators": [
+        "tijolos ou blocos cerâmicos",
+        "argamassa de assentamento",
+        "paredes em construção",
+        "vãos de portas e janelas",
+        "vergas e contravergas"
+      ],
+      "completion_criteria": "Todas as paredes levantadas conforme projeto",
+      "quality_checkpoints": [
+        "prumo e alinhamento das paredes",
+        "amarração adequada entre paredes",
+        "dimensões dos vãos corretas",
+        "execução de vergas e contravergas"
+      ]
+    },
+    "instalacoes": {
+      "name": "Instalações",
+      "description": "Instalações elétricas, hidráulicas e complementares",
+      "icon": "⚡",
+      "typical_duration_days": 12,
+      "visual_indicators": [
+        "tubulações elétricas",
+        "tubulações hidráulicas",
+        "caixas de passagem",
+        "pontos elétricos",
+        "registros e válvulas"
+      ],
+      "completion_criteria": "Instalações executadas e testadas funcionalmente",
+      "quality_checkpoints": [
+        "tubulações sem vazamentos",
+        "instalações elétricas energizadas",
+        "pontos conforme projeto",
+        "testes de funcionamento aprovados"
+      ]
+    },
+    "revestimento": {
+      "name": "Revestimento",
+      "description": "Revestimentos de paredes, pisos e tetos",
+      "icon": "🎨",
+      "typical_duration_days": 15,
+      "visual_indicators": [
+        "reboco nas paredes",
+        "massa corrida aplicada",
+        "cerâmica ou revestimento aplicado",
+        "rejuntamento",
+        "acabamento de cantos"
+      ],
+      "completion_criteria": "Revestimentos aplicados e acabados",
+      "quality_checkpoints": [
+        "aderência do revestimento",
+        "planeza e uniformidade",
+        "qualidade do rejuntamento",
+        "acabamento de detalhes"
+      ]
+    },
+    "acabamento": {
+      "name": "Acabamento",
+      "description": "Pintura, louças, metais e acabamentos finais",
+      "icon": "✨",
+      "typical_duration_days": 8,
+      "visual_indicators": [
+        "pintura aplicada",
+        "louças instaladas",
+        "metais e acessórios",
+        "pisos finalizados",
+        "limpeza final"
+      ],
+      "completion_criteria": "Todos os acabamentos finais concluídos e obra limpa",
+      "quality_checkpoints": [
+        "qualidade da pintura",
+        "funcionamento de louças e metais",
+        "limpeza e organização",
+        "detalhes de acabamento"
+      ]
+    }
+  },
+
+  "prompts": {
+    "system_prompt": "Você é um especialista em obras e construção civil com mais de 15 anos de experiência. Sua função é documentar obras através de conversas estruturadas e análise de imagens.\n\nCOMPORTAMENTO:\n- Seja amigável, técnico mas acessível\n- Mantenha o contexto da conversa\n- Faça perguntas claras e objetivas\n- Analise imagens com precisão técnica\n- Gere documentação estruturada em JSON\n- Use emojis para tornar a conversa mais engajadora\n- Sempre confirme informações importantes\n\nFOCO:\n- Documente 3 locais específicos da obra\n- Identifique fases construtivas corretamente\n- Estime progresso com base em evidências visuais\n- Mantenha histórico de todas as mudanças\n- Forneça recomendações técnicas quando apropriado",
+
+    "initial_interview": {
+      "intro_message": "👋 Olá! Sou seu **Agente de Documentação de Obras**!\n\nVou te ajudar a documentar e acompanhar o progresso da sua obra de forma automática e inteligente.\n\n🎯 **O que vou fazer:**\n- Fazer algumas perguntas sobre a obra\n- Analisar fotos dos 3 locais principais\n- Criar documentação automática em JSON\n- Acompanhar o progresso ao longo do tempo\n\nVamos começar? 🚀",
+
+      "questions_sequence": [
+        {
+          "id": "project_name",
+          "question": "📋 **Qual é o nome ou identificação desta obra?**\n\nExemplo: 'Casa João Silva', 'Reforma Apartamento 301', 'Ampliação Cozinha'",
+          "type": "text",
+          "required": true,
+          "validation": "min_length:3"
+        },
+        {
+          "id": "project_type",
+          "question": "🏗️ **Que tipo de construção estamos acompanhando?**\n\nOpções: Construção nova, Reforma, Ampliação, Retrofit, Outros",
+          "type": "select",
+          "options": ["construção_nova", "reforma", "ampliação", "retrofit", "outros"],
+          "required": true
+        },
+        {
+          "id": "project_address",
+          "question": "📍 **Qual é o endereço ou localização da obra?**\n\nPode ser o endereço completo ou uma referência (Rua, Cidade)",
+          "type": "text",
+          "required": true,
+          "validation": "min_length:5"
+        },
+        {
+          "id": "responsible_engineer",
+          "question": "👷 **Quem é o responsável técnico pela obra?**\n\nNome e CREA/CAU se souber. Ex: 'Eng. João Santos - CREA 123456'",
+          "type": "text",
+          "required": true,
+          "validation": "min_length:3"
+        },
+        {
+          "id": "start_date",
+          "question": "📅 **Qual a data de início da obra?**\n\nSe já começou, a data real. Se ainda não, a data prevista.\nFormato: DD/MM/AAAA",
+          "type": "date",
+          "required": true,
+          "format": "DD/MM/YYYY"
+        },
+        {
+          "id": "expected_completion",
+          "question": "🎯 **Qual a previsão de conclusão da obra?**\n\nData prevista para término completo.\nFormato: DD/MM/AAAA",
+          "type": "date",
+          "required": true,
+          "format": "DD/MM/YYYY"
+        },
+        {
+          "id": "photo_location_1",
+          "question": "📸 **FOTO 1/3 - ÁREA EXTERNA/FACHADA**\n\n🏗️ Preciso de uma foto da **área externa** da obra:\n- Fachada principal\n- Área de trabalho externa\n- Estrutura externa visível\n\nEnvie a foto quando estiver pronto!",
+          "type": "image",
+          "location": "location_1",
+          "required": true
+        },
+        {
+          "id": "photo_location_2",
+          "question": "📸 **FOTO 2/3 - ÁREA INTERNA PRINCIPAL**\n\n🏠 Agora preciso de uma foto da **área interna principal**:\n- Sala, quarto ou ambiente principal\n- Vista geral do interior\n- Estado atual da construção interna\n\nEnvie a foto quando estiver pronto!",
+          "type": "image",
+          "location": "location_2",
+          "required": true
+        },
+        {
+          "id": "photo_location_3",
+          "question": "📸 **FOTO 3/3 - ÁREA TÉCNICA**\n\n🔧 Por último, uma foto da **área técnica**:\n- Cozinha, banheiro ou área molhada\n- Local das instalações principais\n- Área de utilidades\n\nEnvie a foto quando estiver pronto!",
+          "type": "image",
+          "location": "location_3",
+          "required": true
+        }
+      ],
+
+      "completion_message": "✅ **Documentação inicial concluída!**\n\n📋 Analisei todas as informações e fotos. Sua obra foi documentada com sucesso!\n\n📊 **Vou mostrar agora:**\n- Resumo da obra\n- Status dos 3 locais\n- Progresso atual estimado\n- Próximas etapas recomendadas\n\n💾 Documentação salva automaticamente em JSON!"
+    },
+
+    "image_analysis": {
+      "system_prompt": "Analise esta imagem de construção civil com expertise técnica. Identifique precisamente:\n\n1. **Localização**: Qual dos 3 locais configurados (externa, interna, técnica)\n2. **Fase Construtiva**: Qual fase atual (fundação, estrutura, alvenaria, instalações, revestimento, acabamento)\n3. **Progresso**: Estimativa percentual (0-100%) baseada em evidências visuais\n4. **Elementos Detectados**: Lista específica do que está visível\n5. **Qualidade**: Observações sobre execução e qualidade\n6. **Próximos Passos**: O que deve ser feito em seguida\n\nSeja preciso, técnico e baseie-se apenas no que está visível na imagem.",
+
+      "analysis_prompt": "Analise esta imagem de obra e forneça uma análise técnica estruturada. \n\nCONSIDERE:\n- Elementos construtivos visíveis\n- Estado de execução atual\n- Qualidade aparente dos trabalhos\n- Fase construtiva identificável\n- Progresso estimado da atividade\n\nRESPONDA NO FORMATO JSON com os campos: location_identified, current_phase, progress_percentage, elements_detected, quality_observations, next_steps, confidence_score, technical_notes.",
+
+      "followup_questions": [
+        "Precisa de mais detalhes sobre algum aspecto técnico específico?",
+        "Quer que eu analise algum elemento em particular?",
+        "Tem alguma dúvida sobre as recomendações que fiz?",
+        "Quer comparar com fotos anteriores desta área?"
+      ]
+    },
+
+    "progress_update": {
+      "system_prompt": "Compare o estado atual da obra com os dados anteriores e identifique mudanças significativas no progresso. \n\nANÁLISE:\n- Mudanças visíveis desde a última foto\n- Evolução percentual do progresso\n- Nova fase se houver transição\n- Impacto no cronograma previsto\n- Qualidade da execução\n\nRECOMENDAÇÕES:\n- Próximas atividades prioritárias\n- Pontos de atenção identificados\n- Sugestões de melhoria se aplicável",
+
+      "update_prompt": "Identifique as mudanças no progresso desta área da obra comparando com o estado anterior registrado.\n\nFOCO EM:\n- O que mudou desde a última análise\n- Progresso quantificável (percentual)\n- Novas fases ou atividades iniciadas\n- Qualidade da execução observada\n- Impacto no cronograma\n\nRESPONDA NO FORMATO JSON com os campos: changes_detected, progress_delta, new_phase_detected, timeline_impact, quality_assessment, recommendations.",
+
+      "no_changes_message": "🔍 **Análise concluída**\n\nNão identifiquei mudanças significativas nesta área desde a última foto.\n\n📊 **Status mantido:**\n- Mesma fase construtiva\n- Progresso similar\n- Aguardando próximas atividades\n\n💡 **Recomendação**: Continue enviando fotos conforme o trabalho avança!",
+
+      "progress_messages": {
+        "significant_progress": "🚀 **Excelente progresso detectado!**",
+        "moderate_progress": "📈 **Bom avanço identificado!**",
+        "minimal_progress": "⏳ **Pequeno avanço detectado**",
+        "phase_transition": "🎯 **Nova fase iniciada!**",
+        "quality_concern": "⚠️ **Ponto de atenção identificado**"
+      }
+    },
+
+    "error_handling": {
+      "image_analysis_failed": "❌ **Não consegui analisar esta imagem**\n\nPossíveis causas:\n- Imagem muito escura ou borrada\n- Ângulo não permite identificar elementos construtivos\n- Formato não suportado\n\n💡 **Sugestão**: Tire uma nova foto com boa iluminação e foque nos elementos da construção.",
+
+      "location_not_identified": "🤔 **Não consegui identificar qual local esta imagem representa**\n\nPor favor, me informe:\n- É a área externa/fachada? (Local 1)\n- É a área interna principal? (Local 2)  \n- É a área técnica/cozinha/banheiro? (Local 3)\n\nIsso me ajudará a documentar corretamente!",
+
+      "general_error": "❌ **Ops! Algo deu errado**\n\nTente novamente ou me informe se o problema persistir.\nEstou aqui para ajudar! 🤖"
+    },
+
+    "helpful_tips": {
+      "photo_quality": "📸 **Dicas para fotos melhores:**\n- Use boa iluminação natural\n- Mantenha a câmera estável\n- Capture uma visão geral da área\n- Evite contra-luz\n- Foque nos elementos construtivos",
+
+      "documentation_benefits": "📋 **Benefícios da documentação:**\n- Histórico completo da obra\n- Identificação de problemas precocemente\n- Controle de qualidade automatizado\n- Relatórios para stakeholders\n- Base para decisões técnicas",
+
+      "usage_suggestions": "💡 **Como usar melhor:**\n- Envie fotos regularmente (semanal)\n- Documente marcos importantes\n- Tire fotos antes/depois de atividades\n- Use em reuniões de obra\n- Compartilhe com a equipe"
+    }
+  },
+
+  "response_templates": {
+    "analysis_summary": {
+      "template": "🔍 **ANÁLISE CONCLUÍDA - {location_name}**\n\n📊 **Situação Atual:**\n- **Fase**: {current_phase} ({progress}% concluído)\n- **Elementos**: {elements_list}\n- **Qualidade**: {quality_assessment}\n\n🎯 **Próximas Etapas:**\n{next_steps}\n\n📈 **Progresso Geral da Obra**: {overall_progress}%",
+
+      "fields": {
+        "location_name": "Nome do local analisado",
+        "current_phase": "Fase construtiva atual",
+        "progress": "Percentual de progresso",
+        "elements_list": "Lista de elementos detectados",
+        "quality_assessment": "Avaliação da qualidade",
+        "next_steps": "Recomendações para próximas etapas",
+        "overall_progress": "Progresso geral calculado"
+      }
+    },
+
+    "project_summary": {
+      "template": "📋 **RESUMO DA OBRA**\n\n**🏗️ {project_name}**\n- **Tipo**: {project_type}\n- **Local**: {project_address}\n- **Responsável**: {responsible_engineer}\n- **Período**: {start_date} → {expected_completion}\n\n**📍 STATUS DOS LOCAIS:**\n1. **{location_1_name}**: {location_1_phase} - {location_1_progress}%\n2. **{location_2_name}**: {location_2_phase} - {location_2_progress}%\n3. **{location_3_name}**: {location_3_phase} - {location_3_progress}%\n\n**📊 Progresso Geral**: {overall_progress}%\n**🎯 Próxima Etapa**: {next_milestone}\n\n✅ **Documentação salva**: `{filename}`"
+    }
+  },
+
+  "json_output_schema": {
+    "project_info": {
+      "project_name": "string",
+      "project_type": "string",
+      "project_address": "string",
+      "responsible_engineer": "string",
+      "start_date": "string (DD/MM/YYYY)",
+      "expected_completion": "string (DD/MM/YYYY)",
+      "created_at": "string (ISO datetime)",
+      "last_updated": "string (ISO datetime)",
+      "total_estimated_days": "number",
+      "project_id": "string (UUID)"
+    },
+
+    "locations_status": {
+      "location_1": {
+        "location_id": "string",
+        "location_name": "string",
+        "current_phase": "string",
+        "progress_percentage": "number (0-100)",
+        "last_photo_date": "string (ISO datetime)",
+        "last_photo_path": "string",
+        "elements_detected": ["array of strings"],
+        "quality_score": "number (0-100)",
+        "observations": "string",
+        "next_milestone": "string",
+        "estimated_completion_date": "string (DD/MM/YYYY)"
+      },
+      "location_2": "{ same structure as location_1 }",
+      "location_3": "{ same structure as location_1 }"
+    },
+
+    "timeline": [
+      {
+        "timestamp": "string (ISO datetime)",
+        "location": "string",
+        "event_type": "string (photo_analysis | progress_update | phase_change)",
+        "phase": "string",
+        "progress_before": "number",
+        "progress_after": "number",
+        "description": "string",
+        "photo_path": "string",
+        "confidence_score": "number (0-100)"
+      }
+    ],
+
+    "overall_progress": {
+      "total_progress_percentage": "number (0-100)",
+      "current_main_phase": "string",
+      "phases_completed": ["array of strings"],
+      "estimated_completion_date": "string (DD/MM/YYYY)",
+      "days_elapsed": "number",
+      "days_remaining": "number",
+      "schedule_status": "string (on_track | ahead | delayed)",
+      "delays_identified": ["array of strings"],
+      "recommendations": ["array of strings"]
+    },
+
+    "quality_metrics": {
+      "overall_quality_score": "number (0-100)",
+      "location_1_quality": "number (0-100)",
+      "location_2_quality": "number (0-100)",
+      "location_3_quality": "number (0-100)",
+      "quality_issues": ["array of strings"],
+      "quality_improvements": ["array of strings"]
+    },
+
+    "metadata": {
+      "schema_version": "1.0.0",
+      "agent_version": "1.0.0",
+      "total_photos_analyzed": "number",
+      "total_updates": "number",
+      "last_agent_interaction": "string (ISO datetime)"
+    }
+  },
+
+  "validation_rules": {
+    "progress_percentage": {
+      "min": 0,
+      "max": 100,
+      "type": "integer"
+    },
+    "quality_score": {
+      "min": 0,
+      "max": 100,
+      "type": "integer"
+    },
+    "confidence_score": {
+      "min": 0,
+      "max": 100,
+      "type": "integer"
+    },
+    "dates": {
+      "format": "DD/MM/YYYY",
+      "validation": "valid_date"
+    },
+    "required_fields": [
+      "project_name",
+      "project_type",
+      "project_address",
+      "responsible_engineer",
+      "start_date",
+      "expected_completion"
+    ]
+  },
+
+  "feature_flags": {
+    "enable_auto_progress_calculation": true,
+    "enable_quality_scoring": true,
+    "enable_timeline_tracking": true,
+    "enable_recommendations": true,
+    "enable_phase_prediction": false,
+    "enable_cost_estimation": false,
+    "enable_weather_integration": false
+  }
+}

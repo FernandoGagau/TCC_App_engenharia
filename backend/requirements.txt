@@ -1,0 +1,111 @@
+# Python 3.12+ Required
+# Core Framework
+fastapi>=0.115.5
+uvicorn[standard]>=0.32.1
+python-multipart>=0.0.18
+pydantic>=2.10.3
+pydantic-settings>=2.6.1
+email-validator>=2.1.0
+pytz>=2024.1
+
+# CORS e middleware
+starlette>=0.41.3
+
+# WebSocket and Real-time
+websockets>=13.1
+python-socketio>=5.10.0
+slowapi>=0.1.9
+
+# LangChain Ecosystem - Latest Versions (Python 3.12+ compatible)
+langchain>=0.3.27
+langchain-openai>=0.2.11
+langchain-community>=0.3.12
+langchain-core>=0.3.28
+langgraph>=0.6.7
+langgraph-checkpoint>=2.0.0
+langsmith>=0.2.8
+langgraph-cli[inmem]>=0.4.2
+
+# AI/ML Models
+openai>=1.58.1
+tiktoken>=0.8.0
+tavily-python>=0.5.0
+
+# Image Processing
+Pillow>=11.0.0
+opencv-python-headless>=4.10.0.84
+pytesseract>=0.3.13
+
+# Document Processing
+pypdf>=5.1.0
+python-docx>=1.1.2
+openpyxl>=3.1.5
+markdown>=3.7
+beautifulsoup4>=4.12.3
+
+# Database
+sqlalchemy>=2.0.36
+alembic>=1.14.0
+psycopg2-binary>=2.9.10
+redis>=5.2.1
+motor>=3.7.1
+beanie>=2.0.0
+pymongo>=4.15.1
+
+# Cloud Storage
+boto3>=1.35.0
+google-cloud-storage>=2.18.0
+minio>=7.2.16
+
+# File Management
+aiofiles>=24.1.0
+python-magic>=0.4.27
+
+# Utilities
+python-dotenv>=1.0.1
+python-dateutil>=2.9.0
+uuid6>=2024.7.10
+tenacity>=9.0.0
+structlog>=24.4.0
+
+# JSON and Validation
+jsonschema>=4.23.0
+orjson>=3.10.12
+
+# Logging and Monitoring
+loguru>=0.7.3
+prometheus-client>=0.21.1
+
+# Data Processing
+numpy>=2.0.0
+pandas>=2.2.3
+scikit-learn>=1.5.2
+
+# Report Generation
+reportlab>=4.2.5
+jinja2>=3.1.4
+matplotlib>=3.9.3
+seaborn>=0.13.2
+
+# API Clients
+httpx>=0.28.1
+requests>=2.32.3
+
+# Security
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+
+# Testing
+pytest>=8.3.4
+pytest-asyncio>=0.24.0
+pytest-cov>=6.0.0
+
+# YAML Processing
+PyYAML>=6.0.2
+
+# Development Tools (Python 3.12+ optimized)
+black>=24.10.0
+ruff>=0.6.0
+mypy>=1.13.0
+ipython>=8.31.0
+pre-commit>=3.8.0

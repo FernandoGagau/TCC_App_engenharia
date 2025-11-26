@@ -1,0 +1,50 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "backend/Dockerfile"
+watchPatterns = ["backend/**"]
+
+[deploy]
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+[healthcheck]
+path = "/health"
+interval = 30
+timeout = 10
+retries = 3
+
+# Environment variables
+[[deploy.environmentVariables]]
+name = "PYTHONPATH"
+value = "/app"
+
+[[deploy.environmentVariables]]
+name = "PYTHONUNBUFFERED"
+value = "1"
+
+[[deploy.environmentVariables]]
+name = "PYTHONDONTWRITEBYTECODE"
+value = "1"
+
+# Dependencies - specify service dependencies
+[dependencies]
+services = ["mongodb", "minio", "redis"]
+
+# Resource allocation
+[resources]
+memory = "2Gi"
+cpu = "1000m"
+
+# Networking
+[networking]
+internalPort = 8000
+serviceName = "backend"
+
+# Volumes for persistent storage
+[[volumes]]
+name = "storage"
+mountPath = "/app/storage"
+
+[[volumes]]
+name = "logs"
+mountPath = "/app/logs"

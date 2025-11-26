@@ -1,0 +1,53 @@
+{
+  "summary": {
+    "total_tests": 7,
+    "passed": 2,
+    "failed": 5,
+    "success_rate": 28.57142857142857,
+    "timestamp": "2025-09-28T12:33:11.018224"
+  },
+  "tests": [
+    {
+      "test_name": "Baseline Test: No sessions created on interface access",
+      "passed": true,
+      "details": "Session count unchanged: 20",
+      "timestamp": "2025-09-28T12:33:08.881295"
+    },
+    {
+      "test_name": "First Message Test: Session created on first user message",
+      "passed": false,
+      "details": "Failed to send message: 422",
+      "timestamp": "2025-09-28T12:33:08.919315"
+    },
+    {
+      "test_name": "Greeting Behavior: No automatic greeting messages",
+      "passed": false,
+      "details": "Failed to start session: 422",
+      "timestamp": "2025-09-28T12:33:08.920528"
+    },
+    {
+      "test_name": "WebSocket Connection: Lazy connection establishment",
+      "passed": false,
+      "details": "Failed to create session",
+      "timestamp": "2025-09-28T12:33:08.920990"
+    },
+    {
+      "test_name": "Database Persistence: Empty sessions not stored",
+      "passed": true,
+      "details": "Sessions managed appropriately: 20 -> 20",
+      "timestamp": "2025-09-28T12:33:11.014643"
+    },
+    {
+      "test_name": "API Endpoints: REST API behavior",
+      "passed": false,
+      "details": "/start endpoint failed: 422",
+      "timestamp": "2025-09-28T12:33:11.015393"
+    },
+    {
+      "test_name": "Error Scenarios: Error handling and edge cases",
+      "passed": false,
+      "details": "Error tests: True, False, True",
+      "timestamp": "2025-09-28T12:33:11.017922"
+    }
+  ]
+}
